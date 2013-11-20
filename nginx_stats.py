@@ -11,7 +11,7 @@ stats = {
 
 parser = argparse.ArgumentParser()
 parser.add_argument('host')
-parser.add_argument('--location',default='/status')
+parser.add_argument('-l','--location',default='/status')
 args = parser.parse_args()
 
 
