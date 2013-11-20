@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 
-import sys, re, argparse
+import sys, re, argparse,urllib
 
 stats = {
     'active':0,\
@@ -31,7 +31,7 @@ r2 = re.compile(r'(\d+)\s+(\d+)\s+(\d+)')
 r3 = re.compile(r'Reading:\s+(\d+)\s+Writing:\s+(\d+)\s+Waiting:\s+(\d+)')
 
 try:
-    f = usrlib.urlopen(url)
+    f = urllib.urlopen(url)
     lines = f.readlines()
     stats['active'] = r1.search(lines[0]).groups()[0]
     stats['accepts'], stats['handled'], stats['requests'] = r2.search(lines[2]).groups()
