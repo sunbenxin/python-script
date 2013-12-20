@@ -218,7 +218,10 @@ class GET(threading.Thread):
                 logger.info("%s-%s:%s Response:'%s %s'" % (self.hostname, self.ip, self.port, r.status, r.reason))
 
         except Exception, e:
-            logger.error("%s-%s:%s Fatal Error: %s" %(self.hostname, self.ip, self.port, e))
+	    if e.errno == 110:
+		pass
+	    else:
+            	logger.error("%s-%s:%s Fatal Error: %s" %(self.hostname, self.ip, self.port, e))
 
 
 class WebServer(threading.Thread):
