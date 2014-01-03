@@ -7,9 +7,9 @@ from email.MIMEText import MIMEText
 
 # config
 log_file_name = 'monitor_bj.log'
-mail_error_to = ['OP@funshion.com', 'tangk@funshion.com', 'zhanggong@funshion.com', 'wubo@funshion.com','pengxt@funshion.com',]
+mail_error_to = ['sunbx@funshion.com',]
 #mail_error_to = ['OP@funshion.com', 'wubo@funshion.com']
-mail_log_to = ['wanghd@funshion.com']
+mail_log_to = ['sunbx@funshion.com']
 mail_subject_prefix = '北京机房'
 
 LIST = {
