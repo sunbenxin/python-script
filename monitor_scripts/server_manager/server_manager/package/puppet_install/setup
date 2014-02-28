@@ -1,0 +1,29 @@
+#!/bin/sh
+mkdir -p /usr/web_root
+mkdir -p /usr/web_root.git
+chown -R admin.admin /usr/web_root
+chown -R admin.admin /usr/web_root.git
+
+tar zxf git-1.7.9.4.tar.gz
+cd git-1.7.9.4
+./configure
+make && make install
+cd ../
+
+tar zxvf ruby-1.8.6.tar.gz
+cd ruby-1.8.6
+./configure
+make && make install
+ln -s /usr/local/lib/ruby /usr/bin/
+cd ../
+
+tar zxvf facter-1.6.6.tar.gz
+cd facter-1.6.6
+ruby install.rb
+cd ../
+
+tar zxvf puppet-2.7.11.tar.gz
+cd puppet-2.7.11
+ruby install.rb
+
+

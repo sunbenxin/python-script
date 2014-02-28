@@ -1,0 +1,34 @@
+echo "1" > /proc/sys/net/ipv4/conf/lo/arp_ignore
+echo "2" > /proc/sys/net/ipv4/conf/lo/arp_announce
+echo "1" > /proc/sys/net/ipv4/conf/all/arp_ignore
+echo "2" > /proc/sys/net/ipv4/conf/all/arp_announce
+VIP_1=123.125.20.50
+/sbin/ifconfig lo:1 $VIP_1 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_1 dev lo:1
+VIP_2=123.125.20.51
+/sbin/ifconfig lo:2 $VIP_2 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_2 dev lo:2
+VIP_3=123.125.20.52
+/sbin/ifconfig lo:3 $VIP_3 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_3 dev lo:3
+VIP_4=123.125.20.53
+/sbin/ifconfig lo:4 $VIP_4 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_4 dev lo:4
+VIP_5=123.125.20.54
+/sbin/ifconfig lo:5 $VIP_5 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_5 dev lo:5
+VIP_6=123.125.20.55
+/sbin/ifconfig lo:6 $VIP_6 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_6 dev lo:6
+VIP_7=123.125.20.56
+/sbin/ifconfig lo:7 $VIP_7 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_7 dev lo:7
+VIP_8=123.125.20.18
+/sbin/ifconfig lo:8 $VIP_8 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_8 dev lo:8
+VIP_9=123.125.20.19
+/sbin/ifconfig lo:9 $VIP_9 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_9 dev lo:9
+VIP_10=123.125.20.12
+/sbin/ifconfig lo:10 $VIP_10 netmask 255.255.255.255 up
+/sbin/route add -host $VIP_10 dev lo:10

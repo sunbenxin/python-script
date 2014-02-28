@@ -1,0 +1,93 @@
+echo 1 >/proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+echo 0 >/proc/sys/net/ipv4/conf/all/accept_source_route
+echo 0 >/proc/sys/net/ipv4/conf/all/accept_redirects 
+echo 1 >/proc/sys/net/ipv4/icmp_ignore_bogus_error_responses 
+echo 1 >/proc/sys/net/ipv4/conf/all/log_martians  
+
+/sbin/iptables -F
+/sbin/iptables -X
+/sbin/iptables -Z
+
+#iptables -A INPUT -i eth0 -s 10.0.0.0/8 -j DROP 
+#iptables -A INPUT -i eth0 -s 192.168.0.0/16 -j DROP  
+
+##
+/sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT  
+
+##Loopback
+/sbin/iptables -A INPUT -i lo -j ACCEPT 
+/sbin/iptables -A OUTPUT -o lo -j ACCEPT
+
+## SYN-Flooding
+/sbin/iptables -N syn-flood 
+/sbin/iptables -A INPUT -i eth0 -p tcp --syn -j syn-flood 
+/sbin/iptables -A syn-flood -m limit --limit 2000/s --limit-burst 120 -j RETURN 
+/sbin/iptables -A syn-flood -j DROP
+
+## Make sure that new TCP connections are SYN packets 
+/sbin/iptables -A INPUT -i eth0 -p tcp ! --syn -m state --state NEW -j DROP  
+
+## HTTP 
+/sbin/iptables -A INPUT -i eth0 -p tcp -d 0/0 --dport 80 -j ACCEPT   
+/sbin/iptables -A INPUT -i eth0 -p tcp -d 0/0 --dport 21 -j ACCEPT   
+/sbin/iptables -A INPUT -i eth0 -p tcp -d 0/0 --dport 8080 -j ACCEPT   
+/sbin/iptables -A INPUT  -p udp -d 0/0 --dport 3130 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp -d 0/0 --dport 3130 -j ACCEPT   
+
+## NTP
+#iptables -A INPUT -i eth0 -p udp -d 0/0 --dport 123 -j ACCEPT
+
+## CVS 
+#iptables -A INPUT -i eth0 -p tcp -d 0/0 --dport 2401 -j ACCEPT  
+
+## IP packets limit 
+#/sbin/iptables -A INPUT -f -m limit --limit 8000/s --limit-burst 120 -j ACCEPT 
+
+# LOG --log-level INFO --log-prefix "IPT INPUT packet died: "  
+#/sbin/iptables -A INPUT -p icmp -m limit --limit 1/s --limit-burst 3 -j ACCEPT  
+/sbin/iptables -I INPUT -p icmp --icmp-type 8 -j ACCEPT
+
+## FTP service iptables -A INPUT -i eth0 -p tcp --dport 21 -j ACCEPT 
+#iptables -A INPUT -i eth0 -p tcp --dport 20 -j ACCEPT 
+#iptables -A INPUT -p tcp --dport 30001:50000 -j ACCEPT  
+
+## SSH login 
+#iptables -A INPUT -i eth0 -m tcp -p tcp --dport 5044 -j ACCEPT 
+#iptables -A INPUT -i eth0 -p tcp --dport 5044 -j DROP
+
+## SNMP
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 124.207.129.32/27 --dport 3401 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 124.207.205.0/27 --dport 3401 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 124.207.129.32/27 --dport 161 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 124.207.205.0/27 --dport 161 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 222.35.250.28 --dport 161 -j ACCEPT 
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 219.151.9.206 --dport 161 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 218.6.8.201 --dport 161 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 222.35.250.56 --dport 161 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m udp -p udp -s 127.0.0.1 --dport 161 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -p udp --dport 161 -j DROP
+
+
+## SSH login 
+iptables -A INPUT -i eth0 -m tcp -p tcp -s 222.35.250.6 --dport 5044 -j ACCEPT
+iptables -A INPUT -i eth0 -m tcp -p tcp -s 123.125.20.0/26 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 222.35.250.6 --dport 5044 -j ACCEPT 
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 222.35.250.41 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 124.207.129.40 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 127.0.0.1 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 5044 -j DROP
+
+##funshion bs
+#iptables -A INPUT -i eth0 -m udp -p udp --dport 8000 -j ACCEPT
+#iptables -A INPUT -i eth0 -m udp -p udp --dport 9999 -j ACCEPT
+#iptables -A INPUT -i eth0 -m tcp -p tcp -s 61.237.229.224/27 --dport 8001 -j ACCEPT
+#iptables -A INPUT -i eth0 -p tcp --dport 8001 -j DROP
+
+#nagios 
+iptables -A INPUT -i eth0 -m tcp -p tcp -s 222.35.250.8 --dport 5666 -j ACCEPT
+iptables -A INPUT -i eth0 -m tcp -p tcp --dport 5666 -j DROP
+
+## Drop ping
+#/sbin/iptables -I INPUT -p icmp -j DROP
+## Anything else not allowed 
+/sbin/iptables -A INPUT -i eth0 -j DROP

@@ -1,0 +1,37 @@
+echo 1 >/proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+echo 0 >/proc/sys/net/ipv4/conf/all/accept_source_route
+echo 0 >/proc/sys/net/ipv4/conf/all/accept_redirects 
+echo 1 >/proc/sys/net/ipv4/icmp_ignore_bogus_error_responses 
+echo 1 >/proc/sys/net/ipv4/conf/all/log_martians  
+
+/sbin/iptables -F
+/sbin/iptables -X
+/sbin/iptables -Z
+
+/sbin/iptables -A INPUT -i eth0 -p tcp -d 0/0 --dport 80 -j ACCEPT
+
+##ssh login
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 124.207.129.32/27 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 124.207.205.0/27 --dport 5044 -j ACCEPT
+## SSH login 
+iptables -A INPUT -i eth0 -m tcp -p tcp -s 218.6.13.232 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 222.35.250.41 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 222.35.250.0/26 --dport 5044 -j ACCEPT 
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 124.207.129.40 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -m tcp -p tcp -s 127.0.0.1 --dport 5044 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 5044 -j DROP
+
+
+
+#nagios
+/sbin/iptables -A INPUT -p tcp -s 220.181.126.233 --dport 5666 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp -s 124.207.129.40 --dport 5666 -j ACCEPT   
+/sbin/iptables -A INPUT -p tcp -s 124.207.205.1 --dport 5666 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp -s 222.35.250.8 --dport 5666 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 5666 -j DROP
+
+## Drop ping
+/sbin/iptables -I INPUT -p icmp -j ACCEPT
+
+## all of eth1
+/sbin/iptables -A INPUT -i eth1 -j ACCEPT

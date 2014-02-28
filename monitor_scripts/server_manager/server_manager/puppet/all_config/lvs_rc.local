@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# This script will be executed *after* all the other init scripts.
+# You can put your own initialization stuff in here if you don't
+# want to do the full Sys V style init stuff.
+
+touch /var/lock/subsys/local
+/etc/rc.d/firewall
+modprobe ip_tables
+modprobe iptable_filter
+modprobe ip_conntrack hashsize=131072
+modprobe ip_conntrack_ftp
+modprobe ipt_state
+modprobe iptable_nat
+modprobe ip_nat_ftp
+modprobe ipt_MASQUERADE
+modprobe ipt_LOG
+modprobe ipt_REJECT
+echo 11777216 > /proc/sys/net/core/somaxconn
+echo 524288 > /proc/sys/net/core/wmem_max
+echo 524288 > /proc/sys/net/core/wmem_default
+echo 524288 > /proc/sys/net/core/rmem_max
+echo 524288 > /proc/sys/net/core/rmem_default
+echo "153600" > /proc/sys/net/ipv4/ip_conntrack_max
+echo "1024 64000" > /proc/sys/net/ipv4/ip_local_port_range
+echo 153600 > /proc/sys/fs/file-max
+echo 8192 > /proc/sys/net/ipv4/tcp_max_syn_backlog
+echo 0 > /proc/sys/net/ipv4/tcp_tw_reuse
+echo 0 > /proc/sys/net/ipv4/tcp_tw_recycle
+echo 5 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait
+echo 30 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_recv
+echo 10 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait
+echo 36000 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established
+ulimit -HSn 40960
+echo 0 > /proc/sys/net/ipv4/tcp_retrans_collapse
+cd /natserver/;./natserver &
+cd /natserver/;./natd &
+/usr/local/sbin/keepalived -D -f /usr/local/etc/keepalived/keepalived.conf
+/usr/local/nagios/bin/nrpe -c  /usr/local/nagios/etc/nrpe.cfg -d
+echo 0 > /proc/sys/net/ipv4/tcp_timestamps
